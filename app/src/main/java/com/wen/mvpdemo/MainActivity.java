@@ -3,13 +3,17 @@ package com.wen.mvpdemo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
-import android.drm.ProcessedData;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements MvpView {
+import com.wen.mvpdemo.base.BaseActivity;
+import com.wen.mvpdemo.base.BasePresenter;
+import com.wen.mvpdemo.base.BaseView;
+
+public class MainActivity extends BaseActivity implements MvpView {
 
     // 进度条
     ProgressDialog progressDialog;
@@ -31,7 +35,9 @@ public class MainActivity extends AppCompatActivity implements MvpView {
         progressDialog.setMessage("正在加载数据");
 
         // 初始化 Presenter
-        presenter = new MvpPresenter(this);
+        presenter = new MvpPresenter();
+        // 绑定 View 引用
+        presenter.attachView(this);
     }
 
     // button 点击事件调用方法
@@ -44,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements MvpView {
         presenter.getData("failure");
     }
 
+    // button 点击事件调用方法
     public void getDataForError(View view){
         presenter.getData("error");
     }
@@ -63,6 +70,17 @@ public class MainActivity extends AppCompatActivity implements MvpView {
     }
 
     @Override
+    public void showToast(String msg) {
+        Toast.makeText(this,msg, Toast.LENGTH_SHORT).show();
+        text.setText(msg);
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
     public void showData(String data) {
         text.setText(data);
     }
@@ -79,5 +97,10 @@ public class MainActivity extends AppCompatActivity implements MvpView {
         text.setText("网络请求数据出现异常");
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 断开 View 引用
+        presenter.detachView();
+    }
 }

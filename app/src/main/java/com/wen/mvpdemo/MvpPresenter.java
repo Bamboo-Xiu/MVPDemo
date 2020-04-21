@@ -1,46 +1,51 @@
 package com.wen.mvpdemo;
 
-public class MvpPresenter {
+import com.wen.mvpdemo.base.BasePresenter;
+import com.wen.mvpdemo.base.MvpCallback;
 
-    // View 接口
-    private MvpView mView;
+public class MvpPresenter extends BasePresenter<MvpView> {
 
-    public MvpPresenter(MvpView view){
-        this.mView = view;
-    }
-
-    /**
-     * 获取网络数据
-     * @param params 参数
-     */
     public void getData(String params){
 
+        if(!isViewAttached()){
+            // 如果没有 View 引用就不加载数据
+            return;
+        }
+
         // 显示正在加载进度条
-        mView.showLoading();
-        // 调用 Model 请求数据
-        MvpModel.getNetData(params, new MvpCallback() {
+        getView().showLoading();
+
+        MvpModel.getNetData(params, new MvpCallback<String>() {
             @Override
             public void onSuccess(String data) {
                 // 调用 view 接口显示数据
-                mView.showData(data);
+                if(isViewAttached()){
+                    getView().showData(data);
+                }
             }
 
             @Override
             public void onFailure(String msg) {
                 // 调用 view 接口提示失败信息
-                mView.showFailureMessage(msg);
+                if(isViewAttached()){
+                    getView().showToast(msg);
+                }
             }
 
             @Override
             public void onError() {
                 // 调用 view 接口提示请求异常
-                mView.showErrorMessage();
+                if(isViewAttached()){
+                    getView().showErrorMessage();
+                }
             }
 
             @Override
             public void onComplete() {
-                // 隐藏正在加载进度条
-                mView.hideLoading();
+                //隐藏正在加载进度条
+                if(isViewAttached()){
+                    getView().hideLoading();
+                }
             }
         });
     }

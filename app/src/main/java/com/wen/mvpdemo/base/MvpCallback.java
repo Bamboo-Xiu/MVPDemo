@@ -1,15 +1,15 @@
-package com.wen.mvpdemo;
+package com.wen.mvpdemo.base;
 
 /**
  * Callback 接口是 Model 层给 Presenter 层反馈请求信息的传递载体，
  * 所以需要在 Callback 中定义数据请求的各种反馈状态：
  */
-public interface MvpCallback {
+public interface MvpCallback<T> {
     /**
      * 数据请求成功
      * @param data 请求到的数据
      */
-    void onSuccess(String data);
+    void onSuccess(T data);
 
     /**
      * 使用网络 API 接口请求方式时，虽然已经请求成功但是由于 {@code msg} 的原因无法正常返回数据

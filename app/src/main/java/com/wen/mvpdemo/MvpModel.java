@@ -2,6 +2,8 @@ package com.wen.mvpdemo;
 
 import android.os.Handler;
 
+import com.wen.mvpdemo.base.MvpCallback;
+
 /**
  * Model 类中定义了具体的网络请求操作。为模拟真实的网络请求，利用 postDelayed 方法模拟耗时操作，
  * 通过判断请求参数反馈不同的请求状态：
@@ -12,7 +14,7 @@ public class MvpModel {
      * @param param 请求参数
      * @param callback 数据回调接口
      */
-    public static void getNetData(final String param, final MvpCallback callback){
+    public static void getNetData(final String param, final MvpCallback<String> callback){
 
         // 利用postDelayed方法模拟网络请求数据的耗时操作
         new Handler().postDelayed(new Runnable() {
